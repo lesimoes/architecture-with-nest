@@ -11,7 +11,9 @@ export class BankAccountFactory {
   create(ownerName: string, ownerDocument: string): BankAccount {
     const owner = new Owner(ownerName, ownerDocument);
     const bankAccount = new BankAccount();
-    bankAccount.id = new AccountId(randomUUID());
+    const accountId = new AccountId(randomUUID());
+    bankAccount.id = accountId;
+    bankAccount.versionedId = accountId.id;
     bankAccount.number = new AccountNumber(
       Math.random().toString(36).substring(2, 15),
     );

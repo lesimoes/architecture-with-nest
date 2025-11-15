@@ -147,13 +147,170 @@ npm run start:prod
 
 ### Create Bank Account
 
-```http
-POST /bank-accounts
-Content-Type: application/json
+Creates a new bank account.
 
+**Request:**
+
+```bash
+curl -X POST http://localhost:3000/bank-accounts \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ownerName": "John Doe",
+    "ownerDocument": "12345678900"
+  }'
+```
+
+**Response:**
+
+```json
 {
-  "ownerName": "John Doe",
-  "ownerDocument": "12345678900"
+  "id": {
+    "id": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  "number": {
+    "number": "abc123def456"
+  },
+  "owner": {
+    "name": "John Doe",
+    "document": "12345678900"
+  },
+  "balance": {
+    "money": {
+      "amount": 0,
+      "currency": "BRL"
+    }
+  },
+  "versionedId": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+### Make Deposit
+
+Makes a deposit to an existing bank account.
+
+**Request:**
+
+```bash
+curl -X POST http://localhost:3000/bank-accounts/abc123def456/deposit \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 1000.50,
+    "currency": "BRL"
+  }'
+```
+
+**Request (currency is optional, defaults to BRL):**
+
+```bash
+curl -X POST http://localhost:3000/bank-accounts/abc123def456/deposit \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 500
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "id": {
+    "id": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  "number": {
+    "number": "abc123def456"
+  },
+  "owner": {
+    "name": "John Doe",
+    "document": "12345678900"
+  },
+  "balance": {
+    "money": {
+      "amount": 1000.5,
+      "currency": "BRL"
+    }
+  },
+  "versionedId": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+**Error Response (Account Not Found - 404):**
+
+```json
+{
+  "statusCode": 404,
+  "message": "Bank account with number abc123def456 not found",
+  "error": "Not Found"
+}
+```
+
+### Make Withdraw
+
+Makes a withdrawal from an existing bank account.
+
+**Request:**
+
+```bash
+curl -X POST http://localhost:3000/bank-accounts/abc123def456/withdraw \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 250.75,
+    "currency": "BRL"
+  }'
+```
+
+**Request (currency is optional, defaults to BRL):**
+
+```bash
+curl -X POST http://localhost:3000/bank-accounts/abc123def456/withdraw \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 100
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "id": {
+    "id": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  "number": {
+    "number": "abc123def456"
+  },
+  "owner": {
+    "name": "John Doe",
+    "document": "12345678900"
+  },
+  "balance": {
+    "money": {
+      "amount": 749.75,
+      "currency": "BRL"
+    }
+  },
+  "versionedId": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+**Error Responses:**
+
+**Account Not Found (404):**
+
+```json
+{
+  "statusCode": 404,
+  "message": "Bank account with number abc123def456 not found",
+  "error": "Not Found"
+}
+```
+
+**Insufficient Balance (400):**
+
+```json
+{
+  "statusCode": 400,
+  "message": "Insufficient balance",
+  "error": "Bad Request"
 }
 ```
 

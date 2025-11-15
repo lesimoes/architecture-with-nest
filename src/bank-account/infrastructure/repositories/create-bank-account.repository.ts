@@ -5,10 +5,11 @@ import { BankAccountEntity } from '../entities/bank-account.entity';
 import { BankAccount } from 'src/bank-account/domain/back-account';
 import { BankAccountMapper } from '../mapper/bank-account.mapper';
 import { CreateBankAccountRepository as CreateBankAccountRepositoryPort } from '../../application/ports/create-bank-account.repository';
+import { UpdateBankAccountRepository as UpdateBankAccountRepositoryPort } from '../../application/ports/update-bank-account.repository';
 
 @Injectable()
 export class OrmCreateBankAccountRepository
-  implements CreateBankAccountRepositoryPort
+  implements CreateBankAccountRepositoryPort, UpdateBankAccountRepositoryPort
 {
   private readonly logger = new Logger(OrmCreateBankAccountRepository.name);
   constructor(
@@ -23,5 +24,9 @@ export class OrmCreateBankAccountRepository
     const newEntity = await this.bankAccountRepository.save(persistenceModel);
 
     return BankAccountMapper.toDomain(newEntity);
+  }
+
+  async update(bankAccount: BankAccount): Promise<BankAccount> {
+    return this.save(bankAccount);
   }
 }

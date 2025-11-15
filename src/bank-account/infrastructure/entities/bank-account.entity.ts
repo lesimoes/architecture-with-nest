@@ -11,6 +11,13 @@ export class BankAccountEntity {
   @Column()
   owner: string;
 
-  @Column()
+  @Column('decimal', {
+    precision: 15,
+    scale: 2,
+    transformer: {
+      to: (value: number) => value,
+      from: (value: string) => (value ? parseFloat(value) : 0),
+    },
+  })
   balance: number;
 }
