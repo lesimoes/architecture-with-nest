@@ -2,6 +2,28 @@
 
 A banking application built with NestJS following Clean Architecture principles, CQRS pattern, and Domain-Driven Design (DDD).
 
+## Project Purpose
+
+This project is **educational and demonstrative** in nature. Its main objective is to exemplify how to apply:
+
+- **Tactical DDD** (Domain-Driven Design) patterns
+- **Hexagonal Architecture** (Ports and Adapters)
+- **CQRS** (Command Query Responsibility Segregation) with NestJS
+
+Several important aspects of a production-ready application have been **intentionally omitted** to simplify the project and focus solely on demonstrating the application of these architectural concepts. This includes, but is not limited to:
+
+- Comprehensive error handling and validation
+- Authentication and authorization
+- Logging and monitoring
+- Testing coverage
+- Event sourcing
+- Complex business rules
+- Performance optimizations
+
+The project serves as a learning resource for understanding how to structure a NestJS application using these architectural patterns.
+
+For more detailed explanations and tutorials, visit: [lesimoes.com](https://lesimoes.com)
+
 ## Architecture
 
 This project follows **Hexagonal Architecture** (also known as Ports and Adapters) with a clear separation of concerns across multiple layers:
