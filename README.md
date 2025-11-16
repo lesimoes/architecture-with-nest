@@ -2,6 +2,33 @@
 
 A banking application built with NestJS following Clean Architecture principles, CQRS pattern, and Domain-Driven Design (DDD).
 
+This project is part of a series of blog posts that explore architectural patterns with NestJS:
+
+- **Part I**: [DDD, Hexagonal Architecture and CQRS](https://www.lesimoes.com/blog/en/ddd-hexagonal-architecture) | [Branch](https://github.com/lesimoes/architecture-with-nest/tree/part1)
+- **Part II**: [Event Sourcing](https://www.lesimoes.com/blog/en/event-sourcing) | [Branch](https://github.com/lesimoes/architecture-with-nest/tree/part2)
+
+## Project Purpose
+
+This project is **educational and demonstrative** in nature. Its main objective is to exemplify how to apply:
+
+- **Tactical DDD** (Domain-Driven Design) patterns
+- **Hexagonal Architecture** (Ports and Adapters)
+- **CQRS** (Command Query Responsibility Segregation) with NestJS
+
+Several important aspects of a production-ready application have been **intentionally omitted** to simplify the project and focus solely on demonstrating the application of these architectural concepts. This includes, but is not limited to:
+
+- Comprehensive error handling and validation
+- Authentication and authorization
+- Logging and monitoring
+- Testing coverage
+- Event sourcing
+- Complex business rules
+- Performance optimizations
+
+The project serves as a learning resource for understanding how to structure a NestJS application using these architectural patterns.
+
+For more detailed explanations and tutorials, visit: [lesimoes.com](https://lesimoes.com)
+
 ## Architecture
 
 This project follows **Hexagonal Architecture** (also known as Ports and Adapters) with a clear separation of concerns across multiple layers:
@@ -125,13 +152,170 @@ npm run start:prod
 
 ### Create Bank Account
 
-```http
-POST /bank-accounts
-Content-Type: application/json
+Creates a new bank account.
 
+**Request:**
+
+```bash
+curl -X POST http://localhost:3000/bank-accounts \
+  -H "Content-Type: application/json" \
+  -d '{
+    "ownerName": "John Doe",
+    "ownerDocument": "12345678900"
+  }'
+```
+
+**Response:**
+
+```json
 {
-  "ownerName": "John Doe",
-  "ownerDocument": "12345678900"
+  "id": {
+    "id": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  "number": {
+    "number": "abc123def456"
+  },
+  "owner": {
+    "name": "John Doe",
+    "document": "12345678900"
+  },
+  "balance": {
+    "money": {
+      "amount": 0,
+      "currency": "BRL"
+    }
+  },
+  "versionedId": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+### Make Deposit
+
+Makes a deposit to an existing bank account.
+
+**Request:**
+
+```bash
+curl -X POST http://localhost:3000/bank-accounts/abc123def456/deposit \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 1000.50,
+    "currency": "BRL"
+  }'
+```
+
+**Request (currency is optional, defaults to BRL):**
+
+```bash
+curl -X POST http://localhost:3000/bank-accounts/abc123def456/deposit \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 500
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "id": {
+    "id": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  "number": {
+    "number": "abc123def456"
+  },
+  "owner": {
+    "name": "John Doe",
+    "document": "12345678900"
+  },
+  "balance": {
+    "money": {
+      "amount": 1000.5,
+      "currency": "BRL"
+    }
+  },
+  "versionedId": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+**Error Response (Account Not Found - 404):**
+
+```json
+{
+  "statusCode": 404,
+  "message": "Bank account with number abc123def456 not found",
+  "error": "Not Found"
+}
+```
+
+### Make Withdraw
+
+Makes a withdrawal from an existing bank account.
+
+**Request:**
+
+```bash
+curl -X POST http://localhost:3000/bank-accounts/abc123def456/withdraw \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 250.75,
+    "currency": "BRL"
+  }'
+```
+
+**Request (currency is optional, defaults to BRL):**
+
+```bash
+curl -X POST http://localhost:3000/bank-accounts/abc123def456/withdraw \
+  -H "Content-Type: application/json" \
+  -d '{
+    "amount": 100
+  }'
+```
+
+**Response:**
+
+```json
+{
+  "id": {
+    "id": "550e8400-e29b-41d4-a716-446655440000"
+  },
+  "number": {
+    "number": "abc123def456"
+  },
+  "owner": {
+    "name": "John Doe",
+    "document": "12345678900"
+  },
+  "balance": {
+    "money": {
+      "amount": 749.75,
+      "currency": "BRL"
+    }
+  },
+  "versionedId": "550e8400-e29b-41d4-a716-446655440000"
+}
+```
+
+**Error Responses:**
+
+**Account Not Found (404):**
+
+```json
+{
+  "statusCode": 404,
+  "message": "Bank account with number abc123def456 not found",
+  "error": "Not Found"
+}
+```
+
+**Insufficient Balance (400):**
+
+```json
+{
+  "statusCode": 400,
+  "message": "Insufficient balance",
+  "error": "Bad Request"
 }
 ```
 
